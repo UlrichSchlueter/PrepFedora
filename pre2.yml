@@ -1,0 +1,12 @@
+---
+- name: JKASDF
+  hosts: 127.0.0.1
+  connection: local 
+  roles:
+    - role: ansible-role-visual-studio-code-extensions
+      users:
+        - username: uli
+          visual_studio_code_extensions:
+           - vscoss.vscode-ansible          
+          visual_studio_code_extensions_absent:
+            - seanmcbreen.Spell

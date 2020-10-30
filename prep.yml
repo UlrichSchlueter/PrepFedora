@@ -1,0 +1,42 @@
+---
+- name: This is a hello-world example
+  hosts: 127.0.0.1
+  connection: local
+  tasks:
+  - name: Hello World
+    debug:
+        msg: "Hello World"
+
+  - name: Add MS rpm key
+    shell: rpm --import https://packages.microsoft.com/keys/microsoft.asc
+    become: yes
+
+  - name: Create VS Code repo entry
+    shell: sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+    become: yes
+
+
+  - name: Add RPMFUSION repo
+    shell: dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+    become: yes 
+
+  - name: Get RPMs
+    dnf:
+      name: "{{ item }}"
+      state: present
+    loop:
+      - virtualenv
+      - code
+      - podman 
+      - tilix
+      - '@core'
+      - '@Multimedia'
+      - golang
+    become: yes
+
+  - name: install vscode-extensions (Should be a role with proper error handling)
+    shell: "code --install-extension {{ item }}"
+    loop:
+      - vscoss.vscode-ansible
+      - mikeshaker.python-essentials
+      - hashicorp.terraform
