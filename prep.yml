@@ -20,6 +20,15 @@
     shell: dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     become: yes 
 
+
+  - name: Add Chrome repo
+    shell: dnf install fedora-workstation-repositories  
+    become: yes 
+
+  - name: Add Chrome repo
+    shell: dnf config-manager --set-enabled google-chrome 
+    become: yes 
+
   - name: Get RPMs
     dnf:
       name: "{{ item }}"
@@ -32,6 +41,7 @@
       - '@core'
       - '@Multimedia'
       - golang
+      - google-chrome-stable
     become: yes
 
   - name: install vscode-extensions (Should be a role with proper error handling)
